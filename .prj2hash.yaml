@@ -1,6 +1,9 @@
 excludes:
+- .git/
+- .github/
 - build/*
 - "\\.prj2hash.yaml"
 - go.sum
 - prj2hash
 - coverage.out
+- readme.md
