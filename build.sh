@@ -7,7 +7,7 @@ if [ ! -f "build/gototcov" ]; then
     cd build
     git clone https://github.com/jonaz/gototcov gototcov.git
     cd gototcov.git
-    go get: added golang.org/x/tools v0.1.8
+    go get golang.org/x/tools/cover
     go build .
     cp gototcov.git ../gototcov
     cd ${CDIR}/build
