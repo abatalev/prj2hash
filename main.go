@@ -108,11 +108,38 @@ func getShortHash(hash string, isShort bool) string {
 	return hash
 }
 
+func getRoot(root string) string {
+	if root == "" {
+		return "."
+	}
+	return root
+}
+
+func process(cfgPath string, root string) ([]fileInfo, string) {
+	files := sortFiles(makeFileList(loadConfig(cfgPath), getRoot(root)))
+	return files, calcHashFiles(files)
+}
+
+var gitHash = "development"
+var p2hHash = ""
+
 func main() {
 	isShort := flag.Bool("short", false, "Show short variant of hash")
 	isHelp := flag.Bool("help", false, "Show help")
 	isDryRun := flag.Bool("dry-run", false, "Show file list")
+	cfgPath := flag.String("cfg", ".prj2hash.yaml", "config file for project")
+	isVersion := flag.Bool("version", false, "Show version of application")
 	flag.Parse()
+
+	if *isVersion {
+		fmt.Println("Version:")
+		fmt.Println("     git", gitHash)
+		if p2hHash != "" {
+			fmt.Println("     p2h", p2hHash)
+		}
+		return
+	}
+
 	if *isHelp {
 		fmt.Println()
 		flag.PrintDefaults()
@@ -120,13 +147,7 @@ func main() {
 		return
 	}
 
-	root := flag.Arg(0)
-	if root == "" {
-		root = "."
-	}
-
-	files := sortFiles(makeFileList(loadConfig(".prj2hash.yaml"), root))
-	hash := calcHashFiles(files)
+	files, hash := process(*cfgPath, flag.Arg(0))
 	if *isDryRun {
 		for _, file := range files {
 			fmt.Println(" file", file.fileName, file.hash)

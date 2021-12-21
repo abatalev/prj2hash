@@ -50,3 +50,16 @@ func TestShortHash(t *testing.T) {
 	assertions.Len(getShortHash("12345678901234567890", true), 8)
 	assertions.Len(getShortHash("12345678901234567890", false), 20)
 }
+
+func TestRoot(t *testing.T) {
+	assertions := require.New(t)
+	assertions.Equal(".", getRoot(""))
+	assertions.Equal("a", getRoot("a"))
+}
+
+func TestProcess(t *testing.T) {
+	assertions := require.New(t)
+	files, hash := process(".prj2hash.yaml", "./example/")
+	assertions.Len(files, 1)
+	assertions.Len(hash, 40)
+}
