@@ -18,6 +18,11 @@ fi
 cd ${CDIR}
 echo "### calc coverage"
 go test -coverprofile=coverage.out .
+if [ "$?" != "0" ]; then
+    echo "### aborted"
+    exit 1
+fi
+
 echo "### total coverage"
 ./build/gototcov -f coverage.out -limit 60
 if [ "$?" != "0" ]; then

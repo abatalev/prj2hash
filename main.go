@@ -94,6 +94,7 @@ func sortFiles(files []fileInfo) []fileInfo {
 func makeFileList(cfg *config, root string) []fileInfo {
 	files := make([]fileInfo, 0)
 	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		path, _ = filepath.Rel(root, path)
 		if info.IsDir() || excludeMask(cfg, path) {
 			return nil
 		}
@@ -118,7 +119,12 @@ func getRoot(root string) string {
 }
 
 func process(cfgPath string, root string) ([]fileInfo, string) {
-	files := sortFiles(makeFileList(loadConfig(cfgPath), getRoot(root)))
+	rootPath := getRoot(root)
+	fullCfgPath := cfgPath
+	if fullCfgPath == "" {
+		fullCfgPath = rootPath + "/.prj2hash.yaml"
+	}
+	files := sortFiles(makeFileList(loadConfig(fullCfgPath), rootPath))
 	return files, calcHashFiles(files)
 }
 
@@ -129,7 +135,7 @@ func main() {
 	isShort := flag.Bool("short", false, "Show short variant of hash")
 	isHelp := flag.Bool("help", false, "Show help")
 	isDryRun := flag.Bool("dry-run", false, "Show file list")
-	cfgPath := flag.String("cfg", ".prj2hash.yaml", "config file for project")
+	cfgPath := flag.String("cfg", "", "config file for project")
 	isVersion := flag.Bool("version", false, "Show version of application")
 	flag.Parse()
 

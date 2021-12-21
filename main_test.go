@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -36,7 +35,6 @@ func TestLoadConfig(t *testing.T) {
 	cfg := loadConfig("xxx.xxx")
 	assertions.Equal(0, len(cfg.Excludes), "variant 1")
 	cfg = loadConfig("./example/.prj2hash.yaml")
-	fmt.Println(cfg)
 	assertions.Equal(1, len(cfg.Excludes), "variant 2")
 }
 func TestCalcHashBytes(t *testing.T) {
@@ -77,7 +75,7 @@ func TestRoot(t *testing.T) {
 
 func TestProcess(t *testing.T) {
 	assertions := require.New(t)
-	files, hash := process(".prj2hash.yaml", "./example/")
+	files, hash := process("", "./example/")
 	assertions.Len(files, 1)
 	assertions.Len(hash, 40)
 }
