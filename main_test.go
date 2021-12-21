@@ -8,9 +8,27 @@ import (
 )
 
 func TestExcludeMask(t *testing.T) {
+
+	data := []struct {
+		cfg      config
+		filename string
+		result   bool
+	}{
+		{cfg: config{Excludes: []string{}}, filename: "a.txt", result: false},
+		{cfg: config{Excludes: []string{"a\\.txt"}}, filename: "a.txt", result: true},
+		{cfg: config{Excludes: []string{".settings/**/*"}}, filename: ".settings/a.txt", result: true},
+		{cfg: config{Excludes: []string{".settings/**/*"}}, filename: ".settings/lib/a.txt", result: true},
+		{cfg: config{Excludes: []string{"**/*.txt"}}, filename: "target/b.txt", result: true},
+		{cfg: config{Excludes: []string{"target/*"}}, filename: "target/a.txt", result: true},
+		{cfg: config{Excludes: []string{"target/**/*"}}, filename: "target/lib/a.txt", result: true},
+		{cfg: config{Excludes: []string{"target/**/*.js"}}, filename: "target/lib/a.js", result: true},
+		{cfg: config{Excludes: []string{"target/**/*.js"}}, filename: "target/lib/a.cs", result: false},
+	}
+
 	assertions := require.New(t)
-	assertions.False(excludeMask(&config{Excludes: []string{}}, "a.txt"), "variant 0")
-	assertions.True(excludeMask(&config{Excludes: []string{"a.txt"}}, "a.txt"), "variant 1")
+	for _, variant := range data {
+		assertions.Equal(variant.result, excludeMask(&variant.cfg, variant.filename), "error on processing %s", variant.filename)
+	}
 }
 
 func TestLoadConfig(t *testing.T) {

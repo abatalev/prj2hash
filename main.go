@@ -8,9 +8,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -58,7 +58,9 @@ func loadConfig(fileName string) *config {
 
 func excludeMask(cfg *config, path string) bool {
 	for _, mask := range cfg.Excludes {
-		matched, _ := regexp.MatchString(mask, path)
+		matched, _ := doublestar.Match(mask, path)
+		// matched, _ := filepath.Match(mask, path)
+		// matched, _ := regexp.MatchString(mask, path)
 		if matched {
 			return true
 		}

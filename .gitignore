@@ -1,3 +1,4 @@
 build/
 prj2hash
 coverage.out
+go.sum
