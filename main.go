@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -100,6 +101,38 @@ func makeFileList(cfg *config, root string) []fileInfo {
 	return files
 }
 
+func getShortHash(hash string, isShort bool) string {
+	if isShort {
+		return hash[:8]
+	}
+	return hash
+}
+
 func main() {
-	fmt.Println(calcHashFiles(sortFiles(makeFileList(loadConfig(".prj2hash.yaml"), "."))))
+	isShort := flag.Bool("short", false, "Show short variant of hash")
+	isHelp := flag.Bool("help", false, "Show help")
+	isDryRun := flag.Bool("dry-run", false, "Show file list")
+	flag.Parse()
+	if *isHelp {
+		fmt.Println()
+		flag.PrintDefaults()
+		fmt.Println()
+		return
+	}
+
+	root := flag.Arg(0)
+	if root == "" {
+		root = "."
+	}
+
+	files := sortFiles(makeFileList(loadConfig(".prj2hash.yaml"), root))
+	hash := calcHashFiles(files)
+	if *isDryRun {
+		for _, file := range files {
+			fmt.Println(" file", file.fileName, file.hash)
+		}
+		fmt.Println("total", getShortHash(hash, true), hash)
+	} else {
+		fmt.Println(getShortHash(hash, *isShort))
+	}
 }

@@ -44,3 +44,9 @@ func TestSortFiles(t *testing.T) {
 	assertions.Equal("a", files[0].fileName)
 	assertions.Equal("b", files[1].fileName)
 }
+
+func TestShortHash(t *testing.T) {
+	assertions := require.New(t)
+	assertions.Len(getShortHash("12345678901234567890", true), 8)
+	assertions.Len(getShortHash("12345678901234567890", false), 20)
+}
