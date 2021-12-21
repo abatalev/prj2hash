@@ -16,16 +16,23 @@ if [ ! -f "build/gototcov" ]; then
 fi
 
 cd ${CDIR}
-echo "### coverage"
+echo "### calc coverage"
 go test -coverprofile=coverage.out .
-# go tool cover -html=coverage.out
 echo "### total coverage"
 ./build/gototcov -f coverage.out -limit 60
 if [ "$?" != "0" ]; then
+    echo "### open browser"
+    go tool cover -html=coverage.out
     echo "### aborted"
     exit 1
 fi
 
 echo "### build application"
-go build .
+GIT_HASH=$(git rev-list -1 HEAD)
+if [ -f "./prj2hash" ]; then
+    P2H_HASH=$(./prj2hash)
+fi
+go build -ldflags "-X main.gitHash=${GIT_HASH} -X main.p2hHash=${P2H_HASH}" .
+echo "### run new version info"
+./prj2hash -version
 echo "### the end"
