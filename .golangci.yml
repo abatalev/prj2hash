@@ -1,0 +1,64 @@
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - exportloopref
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
+    - asciicheck
+    - gocognit
+    - godot
+    - godox
+    # - goerr113
+    - nestif
+    - prealloc
+    - revive
+  # don't enable:
+    # - scopelint
+    # - gochecknoglobals
+    # - interfacer
+    # - maligned
+    # - testpackage
+    # - wsl
+
+run:
+  concurrency: 4
+  timeout: 1m
+
+linters-settings:
+  gosec:
+    excludes:
+      - G505
+      - G401
+  lll:
+    line-length: 140    

@@ -93,14 +93,17 @@ func sortFiles(files []fileInfo) []fileInfo {
 
 func makeFileList(cfg *config, root string) []fileInfo {
 	files := make([]fileInfo, 0)
-	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		path, _ = filepath.Rel(root, path)
+	err := filepath.Walk(root, func(path0 string, info os.FileInfo, err error) error {
+		path, _ := filepath.Rel(root, path0)
 		if info.IsDir() || excludeMask(cfg, path) {
 			return nil
 		}
-		files = append(files, fileInfo{fileName: path, hash: calcHashFile(path)})
+		files = append(files, fileInfo{fileName: path, hash: calcHashFile(path0)})
 		return nil
 	})
+	if err != nil {
+		panic(err)
+	}
 	return files
 }
 
