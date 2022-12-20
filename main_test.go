@@ -6,30 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestExcludeMask(t *testing.T) {
-	data := []struct {
-		cfg      config
-		filename string
-		result   bool
-	}{
-		{cfg: config{Excludes: []string{}}, filename: "a.txt", result: false},
-		{cfg: config{Excludes: []string{"a\\.txt"}}, filename: "a.txt", result: true},
-		{cfg: config{Excludes: []string{".settings/**/*"}}, filename: ".settings/a.txt", result: true},
-		{cfg: config{Excludes: []string{".settings/**/*"}}, filename: ".settings/lib/a.txt", result: true},
-		{cfg: config{Excludes: []string{"**/*.txt"}}, filename: "target/b.txt", result: true},
-		{cfg: config{Excludes: []string{"target/*"}}, filename: "target/a.txt", result: true},
-		{cfg: config{Excludes: []string{"target/**/*"}}, filename: "target/lib/a.txt", result: true},
-		{cfg: config{Excludes: []string{"target/**/*.js"}}, filename: "target/lib/a.js", result: true},
-		{cfg: config{Excludes: []string{"target/**/*.js"}}, filename: "target/lib/a.cs", result: false},
-	}
-
-	assertions := require.New(t)
-	for _, variant := range data {
-		assertions.Equal(variant.result, excludeMask(&variant.cfg, variant.filename),
-			"error on processing %s", variant.filename)
-	}
-}
-
 func TestLoadConfig(t *testing.T) {
 	assertions := require.New(t)
 	cfg := loadConfig("xxx.xxx")
@@ -37,6 +13,7 @@ func TestLoadConfig(t *testing.T) {
 	cfg = loadConfig("./example/.prj2hash.yaml")
 	assertions.Equal(1, len(cfg.Excludes), "variant 2")
 }
+
 func TestCalcHashBytes(t *testing.T) {
 	assertions := require.New(t)
 	assertions.Equal("86f7e437faa5a7fce15d1ddcb9eaeaea377667b8", calcHashBytes([]byte("a")), "???")
@@ -83,4 +60,40 @@ func TestProcess(t *testing.T) {
 	assertions.Len(hash, 40)
 	assertions.Equal("86f7e437faa5a7fce15d1ddcb9eaeaea377667b8", files[0].hash)
 	assertions.Equal("5441d4130251f67a2827b8a19122f6af0c4ceda7", files[1].hash)
+}
+
+func TestConvertExcludesToRules(t *testing.T) {
+	data := []struct {
+		cfg   config
+		rules []string
+	}{
+		{cfg: config{Excludes: []string{}}, rules: []string{"allow **/*"}},
+		{cfg: config{Excludes: []string{"a\\.txt"}}, rules: []string{"allow **/*", "dany a\\.txt"}},
+	}
+
+	assertions := require.New(t)
+	for idx, variant := range data {
+		xRules := convert(&variant.cfg)
+		assertions.Equal(len(variant.rules), len(xRules),
+			"error on processing %d", idx)
+	}
+}
+
+func TestRules(t *testing.T) {
+	data := []struct {
+		cfg      config
+		filename string
+		result   bool
+	}{
+		{cfg: config{Excludes: []string{}}, filename: "a.txt", result: false},
+		{cfg: config{Excludes: []string{"a\\.txt"}}, filename: "a.txt", result: true},
+		{cfg: config{Rules: []string{"allow **/*", "deny a\\.txt"}}, filename: "a.txt", result: true},
+	}
+
+	assertions := require.New(t)
+	for _, variant := range data {
+		assertions.Equal(variant.result,
+			checkFileByRules(convertRulesToStruct(convert(&variant.cfg)), variant.filename),
+			"error on processing %s", variant.filename)
+	}
 }

@@ -5,21 +5,67 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"gopkg.in/yaml.v3"
 )
 
 type config struct {
-	Excludes []string `yaml:"excludes"`
+	Excludes []string `yaml:"excludes"` // DEPRECATED! Remove in next version
+	Rules    []string `yaml:"rules"`
+}
+
+type rule struct {
+	Allow bool
+	Mask  string
+}
+
+func convert(cfg *config) []string {
+	if len(cfg.Rules) > 0 {
+		return cfg.Rules
+	}
+
+	xRules := []string{"allow **/*"}
+	for _, str := range cfg.Excludes {
+		xRules = append(xRules, "deny "+str)
+	}
+	return xRules
+}
+
+func convertRulesToStruct(rulesStrings []string) []rule {
+	rules := []rule{}
+	for _, str := range rulesStrings {
+		if strings.HasPrefix(str, "allow ") {
+			rules = append(rules, rule{Allow: true, Mask: strings.TrimPrefix(str, "allow ")})
+		} else {
+			rules = append(rules, rule{Allow: false, Mask: strings.TrimPrefix(str, "deny ")})
+		}
+	}
+	return rules
+}
+
+func checkFileByRules(rules []rule, path string) bool {
+	mm := false
+	result := false
+	for _, rule := range rules {
+		matched, _ := doublestar.Match(rule.Mask, path)
+		if matched {
+			mm = true
+			result = rule.Allow
+		}
+	}
+	if mm {
+		return !result
+	}
+	return false
 }
 
 func readConfig(filename string) (*config, error) {
-	buf, err := ioutil.ReadFile(filename)
+	buf, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +87,7 @@ func calcHashBytes(buf []byte) string {
 }
 
 func calcHashFile(path string) string {
-	buf, _ := ioutil.ReadFile(path)
+	buf, _ := os.ReadFile(path)
 	return calcHashBytes(buf)
 }
 
@@ -54,18 +100,6 @@ func loadConfig(fileName string) *config {
 	// 	os.(1)
 	// }
 	return cfg
-}
-
-func excludeMask(cfg *config, path string) bool {
-	for _, mask := range cfg.Excludes {
-		matched, _ := doublestar.Match(mask, path)
-		// matched, _ := filepath.Match(mask, path)
-		// matched, _ := regexp.MatchString(mask, path)
-		if matched {
-			return true
-		}
-	}
-	return false
 }
 
 type fileInfo struct {
@@ -92,10 +126,11 @@ func sortFiles(files []fileInfo) []fileInfo {
 }
 
 func makeFileList(cfg *config, root string) []fileInfo {
+	rules := convertRulesToStruct(convert(cfg))
 	files := make([]fileInfo, 0)
 	err := filepath.Walk(root, func(path0 string, info os.FileInfo, err error) error {
 		path, _ := filepath.Rel(root, path0)
-		if info.IsDir() || excludeMask(cfg, path) {
+		if info.IsDir() || checkFileByRules(rules, path) {
 			return nil
 		}
 		files = append(files, fileInfo{fileName: path, hash: calcHashFile(path0)})

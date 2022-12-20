@@ -2,9 +2,13 @@ excludes:
 - .git/**/*
 - .github/**/*
 - .gitignore
+- vendor/**/*
+- example/**/*
 - build/**/*
 - .prj2hash.yaml
 - go.sum
 - prj2hash
 - coverage.out
 - readme.md
+- "**/*tmp*"
+- "**/*.y*ml"

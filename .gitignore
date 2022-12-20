@@ -1,3 +1,4 @@
+vendor/
 build/
 prj2hash
 coverage.out
