@@ -1,0 +1,3 @@
+FROM nginx
+COPY script.js /var/html/
+COPY nginx1/index.html /var/html/

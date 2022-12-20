@@ -1,0 +1,5 @@
+rules:
+- deny "**/*
+- allow Dockerfile.nginx1
+- allow script.js
+- allow nginx1/**/*

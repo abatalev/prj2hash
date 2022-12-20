@@ -61,7 +61,8 @@ func checkFileByRules(rules []rule, path string) bool {
 	if mm {
 		return !result
 	}
-	return false
+
+	return true
 }
 
 func readConfig(filename string) (*config, error) {

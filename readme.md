@@ -33,6 +33,21 @@ rules:
 - deny readme.md
 ```
 
+## Examples
+
+```sh
+❯ ./prj2hash --dry-run --cfg examples/nginxs/nginx1-prj2hash.yaml examples/nginxs
+ file Dockerfile.nginx1 cd19de9379c5e37ae84eb1853e5177cb7cf3420e
+ file nginx1/index.html 9b895ef2c4a85a7ea565ef768504115e5474ac00
+ file script.js 474660db527afb1bd7e5f5418b24bd63ea6f34ed
+total a882780f a882780f89bdd4e28ca222daa963ae56dd3cf675
+❯ ./prj2hash --dry-run --cfg examples/nginxs/nginx2-prj2hash.yaml examples/nginxs
+ file Dockerfile.nginx2 8d23f104e2631b3b2af28c891116c36cf636aa58
+ file nginx2/index.html f601fa1fc00f12c511ece27e82fba829e4e64251
+ file script.js 474660db527afb1bd7e5f5418b24bd63ea6f34ed
+total 139d40be 139d40be110804c7bc97f3372def074d419e21c2
+```
+
 ## Build
 
 ### Simple build
