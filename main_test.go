@@ -10,7 +10,7 @@ func TestLoadConfig(t *testing.T) {
 	assertions := require.New(t)
 	cfg := loadConfig("xxx.xxx")
 	assertions.Equal(0, len(cfg.Excludes), "variant 1")
-	cfg = loadConfig("./example/.prj2hash.yaml")
+	cfg = loadConfig("./examples/example/.prj2hash.yaml")
 	assertions.Equal(1, len(cfg.Excludes), "variant 2")
 }
 
@@ -27,8 +27,8 @@ func TestCalcHashFiles(t *testing.T) {
 
 func TestWalk(t *testing.T) {
 	assertions := require.New(t)
-	assertions.Equal(3, len(makeFileList(&config{Excludes: []string{}}, "example")), "length of example 1")
-	assertions.Equal(2, len(makeFileList(&config{Excludes: []string{".prj2hash.yaml"}}, "example")), "length of example 2")
+	assertions.Equal(3, len(makeFileList(&config{Excludes: []string{}}, "examples/example")), "length of example 1")
+	assertions.Equal(2, len(makeFileList(&config{Excludes: []string{".prj2hash.yaml"}}, "examples/example")), "length of example 2")
 }
 
 func TestSortFiles(t *testing.T) {
@@ -55,7 +55,7 @@ func TestRoot(t *testing.T) {
 
 func TestProcess(t *testing.T) {
 	assertions := require.New(t)
-	files, hash := process("", "./example/")
+	files, hash := process("", "./examples/example/")
 	assertions.Len(files, 2)
 	assertions.Len(hash, 40)
 	assertions.Equal("86f7e437faa5a7fce15d1ddcb9eaeaea377667b8", files[0].hash)
