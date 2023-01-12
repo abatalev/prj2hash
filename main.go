@@ -111,7 +111,7 @@ type fileInfo struct {
 func calcHashFiles(files []fileInfo) string {
 	s := ""
 	for _, file := range files {
-		s += file.fileName + " " + file.hash + "\n"
+		s += filepath.ToSlash(file.fileName) + " " + file.hash + "\n"
 	}
 	return calcHashBytes([]byte(s))
 }
