@@ -88,6 +88,8 @@ func TestRules(t *testing.T) {
 		{cfg: config{Excludes: []string{}}, filename: "a.txt", result: false},
 		{cfg: config{Excludes: []string{"a\\.txt"}}, filename: "a.txt", result: true},
 		{cfg: config{Rules: []string{"allow **/*", "deny a\\.txt"}}, filename: "a.txt", result: true},
+		{cfg: config{Rules: []string{"allow **/*", "deny target/**/*"}}, filename: "target\\a.txt", result: false},
+		{cfg: config{Rules: []string{"deny **/*", "allow target/**/*"}}, filename: "target\\a.txt", result: true},
 	}
 
 	assertions := require.New(t)

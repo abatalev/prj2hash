@@ -49,10 +49,11 @@ func convertRulesToStruct(rulesStrings []string) []rule {
 }
 
 func checkFileByRules(rules []rule, path string) bool {
+	path0 := filepath.ToSlash(path)
 	mm := false
 	result := false
 	for _, rule := range rules {
-		matched, _ := doublestar.Match(rule.Mask, path)
+		matched, _ := doublestar.Match(rule.Mask, path0)
 		if matched {
 			mm = true
 			result = rule.Allow
