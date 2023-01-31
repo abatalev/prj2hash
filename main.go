@@ -112,7 +112,7 @@ type fileInfo struct {
 func calcHashFiles(files []fileInfo) string {
 	s := ""
 	for _, file := range files {
-		s += filepath.ToSlash(file.fileName) + " " + file.hash + "\n"
+		s += file.fileName + " " + file.hash + "\n"
 	}
 	return calcHashBytes([]byte(s))
 }
@@ -135,7 +135,7 @@ func makeFileList(cfg *config, root string) []fileInfo {
 		if info.IsDir() || checkFileByRules(rules, path) {
 			return nil
 		}
-		files = append(files, fileInfo{fileName: path, hash: calcHashFile(path0)})
+		files = append(files, fileInfo{fileName: filepath.ToSlash(path), hash: calcHashFile(path0)})
 		return nil
 	})
 	if err != nil {
