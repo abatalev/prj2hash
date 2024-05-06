@@ -28,9 +28,17 @@ if [ ! -f "build/gototcov" ]; then
     echo "### done build tools"
 fi
 
+cd $CDIR
+if [ ! -f "build/golangci-lint" ]; then
+  echo "Install golangci-lint"
+  curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b build/
+
+  build/golangci-lint --version
+fi
+
 cd ${CDIR}
 echo "### linters"
-golangci-lint run ./...
+build/golangci-lint run ./...
 if [ "$?" != "0" ]; then
     echo "### aborted"
     exit 1

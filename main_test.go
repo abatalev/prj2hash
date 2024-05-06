@@ -73,7 +73,8 @@ func TestConvertExcludesToRules(t *testing.T) {
 
 	assertions := require.New(t)
 	for idx, variant := range data {
-		xRules := convert(&variant.cfg)
+		v := variant
+		xRules := convert(&v.cfg)
 		assertions.Equal(len(variant.rules), len(xRules),
 			"error on processing %d", idx)
 	}
@@ -94,8 +95,9 @@ func TestRules(t *testing.T) {
 
 	assertions := require.New(t)
 	for _, variant := range data {
+		v := variant
 		assertions.Equal(variant.result,
-			checkFileByRules(convertRulesToStruct(convert(&variant.cfg)), variant.filename),
+			checkFileByRules(convertRulesToStruct(convert(&v.cfg)), variant.filename),
 			"error on processing %s", variant.filename)
 	}
 }

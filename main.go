@@ -130,7 +130,7 @@ func sortFiles(files []fileInfo) []fileInfo {
 func makeFileList(cfg *config, root string) []fileInfo {
 	rules := convertRulesToStruct(convert(cfg))
 	files := make([]fileInfo, 0)
-	err := filepath.Walk(root, func(path0 string, info os.FileInfo, err error) error {
+	err := filepath.Walk(root, func(path0 string, info os.FileInfo, _ error) error {
 		path, _ := filepath.Rel(root, path0)
 		if info.IsDir() || checkFileByRules(rules, path) {
 			return nil
