@@ -37,6 +37,8 @@ if [ ! -f "build/golangci-lint" ]; then
 fi
 
 cd ${CDIR}
+go mod tidy
+
 echo "### linters"
 build/golangci-lint run ./...
 if [ "$?" != "0" ]; then
