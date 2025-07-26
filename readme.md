@@ -66,5 +66,11 @@ docker build -t abatalev/prj2hash .
 ## Development
 
 ```sh
+docker buildx build -f Dockerfile.alpine -t prj2hash:latest .
+```
+
+or
+
+```sh
 ./build.sh
 ```

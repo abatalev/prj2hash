@@ -1,5 +1,5 @@
 vendor/
-build/
+tools/
 prj2hash
 coverage.out
 go.sum

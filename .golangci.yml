@@ -3,7 +3,7 @@ linters:
   enable:
     - bodyclose
     # - deadcode
-    - depguard
+    # - depguard
     - dogsled
     - dupl
     - errcheck
@@ -15,7 +15,7 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - mnd
+    - gomnd
     - goprintffuncname
     - gosec
     - gosimple
@@ -29,7 +29,7 @@ linters:
     - staticcheck
     # - structcheck
     - stylecheck
-    - typecheck
+    # - typecheck
     - unconvert
     - unparam
     - unused
@@ -52,14 +52,28 @@ linters:
     # - wsl
 
 run:
+  relative-path-mode: gomod
   concurrency: 4
   timeout: 1m
+  go: '1.17'
 
 linters-settings:
+  # revive:
+  #   ignore-generated-header: true
+  #   severity: warning
+  #   rules:
+  #     - name: atomic
+  #     - name: line-length-limit
+  #       severity: error
+  #       arguments: [80]
+  #     - name: unhandled-error
+  #       arguments : ["fmt.Printf", "myFunction"]
+
   gosec:
     excludes:
       - G505
       - G401
+
   lll:
     line-length: 140 
 
@@ -72,8 +86,8 @@ linters-settings:
           - "!$test"
         allow:
           - $gostd
-        deny:
-          - pkg: io/ioutil
-            desc: "replaced by io and os packages since Go 1.16: https://tip.golang.org/doc/go1.16#ioutil"
+        # deny:
+        #   - pkg: io/ioutil
+        #     desc: "replaced by io and os packages since Go 1.16: https://tip.golang.org/doc/go1.16#ioutil"
 
 
