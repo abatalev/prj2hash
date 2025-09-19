@@ -4,9 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"abatalev.com/prj2hash/internal/config"
-	"abatalev.com/prj2hash/internal/files"
-	"abatalev.com/prj2hash/internal/hash"
+	"github.com/abatalev/prj2hash/hashutils"
+	"github.com/abatalev/prj2hash/internal/config"
+	"github.com/abatalev/prj2hash/internal/files"
+	"github.com/abatalev/prj2hash/internal/hash"
 )
 
 var gitHash = "development"
@@ -19,14 +20,14 @@ func getRoot(root string) string {
 	return root
 }
 
-func process(cfgPath string, root string) ([]files.FileInfo, string) {
+func process(cfgPath string, root string) ([]hashutils.FileInfo, string) {
 	rootPath := getRoot(root)
 	fullCfgPath := cfgPath
 	if fullCfgPath == "" {
 		fullCfgPath = rootPath + "/.prj2hash.yaml"
 	}
-	fileList := files.SortFiles(files.MakeFileList(config.LoadConfig(fullCfgPath), rootPath))
-	return fileList, files.CalcHashFiles(fileList)
+	fileList := hashutils.SortFiles(files.MakeFileList(config.LoadConfig(fullCfgPath), rootPath))
+	return fileList, hashutils.CalcHashFiles(fileList)
 }
 
 func main() {

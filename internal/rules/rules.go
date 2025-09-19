@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"abatalev.com/prj2hash/internal/config"
+	"github.com/abatalev/prj2hash/internal/config"
 	"github.com/bmatcuk/doublestar/v4"
 )
 

@@ -3,7 +3,7 @@ package rules
 import (
 	"testing"
 
-	"abatalev.com/prj2hash/internal/config"
+	"github.com/abatalev/prj2hash/internal/config"
 	"github.com/stretchr/testify/require"
 )
 

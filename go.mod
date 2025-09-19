@@ -1,4 +1,4 @@
-module abatalev.com/prj2hash
+module github.com/abatalev/prj2hash
 
 go 1.17
 
