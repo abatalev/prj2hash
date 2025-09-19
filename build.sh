@@ -36,10 +36,10 @@ build_app_git() {
     if [ -f "./prj2hash" ]; then
         P2H_HASH=$(./prj2hash)
     fi
-    ${GOBIN} build -ldflags "-X main.gitHash=${GIT_HASH} -X main.p2hHash=${P2H_HASH}" .
+    ${GOBIN} build -o prj2hash -ldflags "-X main.gitHash=${GIT_HASH} -X main.p2hHash=${P2H_HASH}" ./cmd/prj2hash/main.go
     if [ "${P2H_HASH}" = "" ]; then
         P2H_HASH=$(./prj2hash)
-        ${GOBIN} build -ldflags "-X main.gitHash=${GIT_HASH} -X main.p2hHash=${P2H_HASH}" .
+        ${GOBIN} build -o prj2hash -ldflags "-X main.gitHash=${GIT_HASH} -X main.p2hHash=${P2H_HASH}" ./cmd/prj2hash/main.go
     fi
 }
 
@@ -91,7 +91,7 @@ if ! ./tools/golangci-lint run -v; then
 fi
 
 echo "### calc coverage"
-if ! ${GOBIN} test -coverprofile=coverage.out .; then
+if ! ${GOBIN} test -coverprofile=coverage.out ./...; then
     echo "### aborted"
     exit 1
 fi

@@ -1,14 +1,18 @@
 FROM golang:1.17.13-alpine AS builder
 RUN apk --update add git curl gcc gawk
 WORKDIR /work
+COPY .git/ /work/.git/
 COPY go.* /work/
 COPY build.sh /work/
-COPY *.go /work/
+COPY internal/ /work/internal/
+COPY cmd /work/cmd/
+
 COPY examples/ /work/examples/
 COPY .golangci.yml /work/
 RUN go mod download
 RUN ./build.sh
+# RUN go build -o prj2hash cmd/prj2hash/main.go
 
 FROM alpine:3.16.1
 COPY --from=builder /work/prj2hash /app/
-CMD /app/prj2hash
+CMD [ "/app/prj2hash" ]
