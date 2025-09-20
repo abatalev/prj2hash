@@ -3,7 +3,6 @@ COPY ./vendor $APP_ROOT/src/vendor
 COPY go.* $APP_ROOT/src
 COPY build.sh $APP_ROOT/src
 COPY internal/ $APP_ROOT/src/internal/
-COPY hashutils/ $APP_ROOT/src/hashutils/
 COPY cmd $APP_ROOT/src/cmd/
 
 COPY examples/ $APP_ROOT/src/examples/

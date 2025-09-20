@@ -5,7 +5,6 @@ COPY .git/ /work/.git/
 COPY go.* /work/
 COPY build.sh /work/
 COPY internal/ /work/internal/
-COPY hashutils/ /work/hashutils/
 COPY cmd /work/cmd/
 
 COPY examples/ /work/examples/

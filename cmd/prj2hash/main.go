@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/abatalev/prj2hash/hashutils"
+	"github.com/abatalev/hashutils"
 	"github.com/abatalev/prj2hash/internal/config"
 	"github.com/abatalev/prj2hash/internal/files"
 	"github.com/abatalev/prj2hash/internal/hash"
